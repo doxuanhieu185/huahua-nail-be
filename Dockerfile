@@ -43,7 +43,7 @@ RUN mkdir -p /code/static /code/media && \
 USER appuser
 
 # Collect static files
-RUN python manage.py collectstatic --noinput
+# RUN python manage.py collectstatic --noinput
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
