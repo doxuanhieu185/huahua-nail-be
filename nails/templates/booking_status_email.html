@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Cập nhật trạng thái đặt lịch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header {
+            background-color: #f8bbce;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+        }
+        .content {
+            padding: 20px;
+        }
+        .booking-details {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .status {
+            font-weight: bold;
+            color: #28a745;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Cập nhật trạng thái đặt lịch</h1>
+    </div>
+    
+    <div class="content">
+        <p>Xin chào {{ user.email }},</p>
+        
+        <p>Lịch đặt làm nail của bạn đã được <span class="status">{{ status }}</span>. Dưới đây là chi tiết đặt lịch:</p>
+        
+        <div class="booking-details">
+            <p><strong>Mã đặt lịch:</strong> #{{ booking.id }}</p>
+            <p><strong>Ngày:</strong> {{ booking.booking_date }}</p>
+            <p><strong>Giờ:</strong> {{ booking.booking_time }}</p>
+            <p><strong>Trạng thái:</strong> {{ status }}</p>
+            {% if nail_sample %}
+            <p><strong>Mẫu nail:</strong> #{{ nail_sample.id }}</p>
+            <p><strong>Giá:</strong> {{ nail_sample.price }} VNĐ</p>
+            {% endif %}
+            {% if booking.notes %}
+            <p><strong>Ghi chú:</strong> {{ booking.notes }}</p>
+            {% endif %}
+        </div>
+        
+        <p>Vui lòng đến tiệm đúng giờ. Nếu bạn cần hủy hoặc thay đổi lịch, vui lòng liên hệ trước ít nhất 2 giờ.</p>
+        
+        <p>Xin cảm ơn và hẹn gặp lại!</p>
+    </div>
+    
+    <div class="footer">
+        <p>© 2025 Nail Salon. Đây là email tự động, vui lòng không trả lời.</p>
+        <p>Địa chỉ: 123 Đường ABC, Thành phố XYZ | Điện thoại: 0123 456 789</p>
+    </div>
+</body>
+</html>

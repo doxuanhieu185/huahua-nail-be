@@ -1,0 +1,50 @@
+pipeline {
+    agent {
+        label 'dev-server'
+    }
+    
+    environment {
+        appUser = "jenkins"
+        projectDir = "${WORKSPACE}"
+        composeFile = "docker-compose.yml"
+    }
+    stages {
+        stage('Checkout Code') {
+            steps {
+                checkout scm 
+            }
+        }
+        stage('Deploy with Docker Compose') {
+            steps {
+                script{
+                    try {
+                        timeout(time: 5, unit: 'MINUTES') {
+                            env.useChoice = input message: "Can it be deployed?",
+                                parameters: [choice(name: 'deploy', choices: 'no\nyes', description: 'Choose "yes" if you want to deploy!')]
+                        }
+                        if (env.useChoice == 'yes') {
+                            sh """
+                                cd ${projectDir}
+                                docker-compose down
+                                docker-compose up -d --build
+                            """Ï
+                        }
+                        else {
+                            echo "Do not confirm the deployment!"
+                        }
+                    } catch (Exception err) {
+
+                    }
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo "Deployment successfully completed!"
+        }
+        failure {
+            echo "Deployment failed!"
+        }
+    }
+}
