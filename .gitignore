@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Django
 *.log
 *.pot
@@ -31,3 +32,7 @@ Thumbs.db
 
 # Docker
 .dockerignore
+=======
+venv
+db.sqlite3 
+>>>>>>> 869736e606aa35ec4f68d40b7f667e05aa8f68ef
