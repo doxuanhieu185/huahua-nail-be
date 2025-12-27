@@ -1,7 +1,7 @@
 # Multi-stage build for Django backend
-FROM python:3.8-alpine AS base
+FROM python:3.11-alpine AS build-stage
 
-# Install system dependencies
+# Install build dependencies
 RUN apk add --no-cache \
     gcc \
     musl-dev \
@@ -42,7 +42,7 @@ RUN addgroup -g 1001 -S appgroup && \
     adduser -u 1001 -S appuser -G appgroup
 
 # Copy wheels and install
-COPY --from=builder /tmp/wheels /wheels
+COPY --from=build-stage /tmp/wheels /wheels
 RUN pip install --no-cache /wheels/*
 
 WORKDIR /app
