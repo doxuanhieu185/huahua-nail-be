@@ -1,7 +1,7 @@
-# Multi-stage build for Django backend
-FROM python:3.11-alpine AS build-stage
+# Django backend
+FROM python:3.11-alpine
 
-# Install build dependencies
+# Install system dependencies
 RUN apk add --no-cache \
     gcc \
     musl-dev \
@@ -13,39 +13,21 @@ RUN apk add --no-cache \
     openjpeg-dev \
     tiff-dev \
     mariadb-dev \
-    pkgconfig
-
-# Upgrade pip and install wheel
-RUN pip install --upgrade pip setuptools wheel
-
-# Copy and install requirements
-COPY requirements.txt /tmp/
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /tmp/wheels -r /tmp/requirements.txt
-
-# Production stage
-FROM python:3.11-alpine AS production
-
-# Install runtime dependencies only
-RUN apk add --no-cache \
-    jpeg \
-    zlib \
-    freetype \
-    lcms2 \
-    openjpeg \
-    tiff \
-    mariadb-connector-c \
-    tzdata \
+    pkgconfig \
     && rm -rf /var/cache/apk/*
+
+# Upgrade pip
+RUN pip install --upgrade pip setuptools wheel
 
 # Create non-root user
 RUN addgroup -g 1001 -S appgroup && \
     adduser -u 1001 -S appuser -G appgroup
 
-# Copy wheels and install
-COPY --from=build-stage /tmp/wheels /wheels
-RUN pip install --no-cache /wheels/*
-
 WORKDIR /app
+
+# Copy and install requirements
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY --chown=appuser:appgroup . /app/
@@ -56,10 +38,6 @@ RUN mkdir -p /app/static /app/media && \
 
 # Switch to non-root user
 USER appuser
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/admin/', timeout=10)" || exit 1
 
 EXPOSE 8000
 
